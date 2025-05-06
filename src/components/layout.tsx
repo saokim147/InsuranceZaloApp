@@ -6,6 +6,7 @@ import BottomNavigationPage from "./bottom-navigation-page";
 import DetailPage from "@/pages/index/details";
 import LoginPage from "@/pages/login";
 import ForgotPasswordPage from "@/pages/forgotpassword";
+import TestPage from "@/pages/test";
 
 const Layout = () => {
   const location = useLocation();
@@ -15,13 +16,13 @@ const Layout = () => {
     <Box flex flexDirection="column" className="h-screen">
       <Box className="flex-1 flex flex-col overflow-hidden">
         <AnimationRoutes>
-          <Route path="/" element={<HomePage />}></Route>
+          <Route path="/" element={<TestPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route
             path="/forgotPassword"
             element={<ForgotPasswordPage />}
           ></Route>
-          <Route path="/home" element={<HomePage />}></Route>
+          <Route path="/home" element={<HomePage />}></Route>\
           <Route path="/map" element={<MapPage />}></Route>
           <Route path="/profile" element={<ProfilePage />}></Route>
           <Route path="/detail" element={<DetailPage />}></Route>

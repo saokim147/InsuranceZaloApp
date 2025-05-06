@@ -87,7 +87,6 @@ export async function getPagedHospitals(
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "ngrok-skip-browser-warning": "69420",
     },
   });
   if (!res.ok) {
@@ -95,7 +94,6 @@ export async function getPagedHospitals(
   }
   const response = await res.json();
   const nextPage = page < response.totalRecord / pageSize ? page + 1 : null;
-
   const hospitalResponse: HospitalsResponse = {
     data: response.data,
     totalRecord: response.totalRecord,

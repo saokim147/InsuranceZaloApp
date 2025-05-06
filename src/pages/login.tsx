@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Page, useNavigate } from "zmp-ui";
+import { useState } from "react";
 
 const UsernameSchema = z
   .string()
@@ -13,11 +14,11 @@ const UsernameSchema = z
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [password, setPassword] = useState("");
   const form = useForm({
     defaultValues: {
       username: "",
       password: "",
-      confirmPassword: "",
     },
     validators: {
       onSubmit: ({ value }) => {
@@ -49,11 +50,18 @@ export default function LoginPage() {
                     placeholder="m@example.com"
                     required
                   />
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="..."
+                    required
+                  />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
                     <a
+                      id="forgotPassword"
                       onClick={() => navigate("/forgotPassword")}
                       className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                     >

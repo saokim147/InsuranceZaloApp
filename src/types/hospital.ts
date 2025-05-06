@@ -65,6 +65,7 @@ export interface hospital {
   longitude: number;
   latitude: number;
 }
+
 export function convertFromSearchResponse(
   response?: SearchResponse
 ): { value: string; label: string }[] {

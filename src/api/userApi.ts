@@ -1,4 +1,5 @@
 import { toQueryParams } from "@/utils/queryUtil";
+import { ParseStatus } from "zod";
 // https://localhost:7252
 //  https://7a02-2001-ee0-4f04-dc20-5831-cb0c-ed48-4ec3.ngrok-free.app
 const API_BASE_URL =
@@ -78,6 +79,30 @@ export async function login(phoneNumber: string, password: string) {
       body: JSON.stringify({
         UserName: phoneNumber,
         Password1: password,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function signIn(username: string, password: string) {
+  const url = `${EXTERNAL_API_BASE_URL}/sign-in`;
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
       }),
     });
 
