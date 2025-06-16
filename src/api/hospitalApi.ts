@@ -2,11 +2,9 @@ import {
   CityResponse,
   HospitalsResponse,
   SearchResponse,
-} from "@/types/hospital";
+} from "@/types/hospitalType";
 import { toQueryParams } from "@/utils/queryUtil";
-//https://c681-2001-ee0-4f04-dc20-3569-7042-67a-449b.ngrok-free.app/
-//https://api-uat-ibmi.baominh.vn:8500/insurance
-//https://localhost:7262
+
 const API_BASE_URL = "https://api-uat-ibmi.baominh.vn:8500/insurance/Hospital";
 
 export const getHospitalNames = async (
@@ -31,13 +29,12 @@ export const getHospitalNames = async (
     isBlackList,
     lang,
   };
-  const url = `${API_BASE_URL}/Search?${toQueryParams(params).toString()}`;
+  const url = `${API_BASE_URL}/Search?${toQueryParams(params)}`;
   try {
     const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "69420",
       },
     });
 
@@ -82,7 +79,7 @@ export async function getPagedHospitals(
     isBlackList,
     lang,
   };
-  const url = `${API_BASE_URL}/?${toQueryParams(params).toString()}`;
+  const url = `${API_BASE_URL}/?${toQueryParams(params)}`;
   const res = await fetch(url, {
     method: "GET",
     headers: {
@@ -110,7 +107,7 @@ export async function getCityList(
     cityName,
     lang,
   };
-  const url = `${API_BASE_URL}/ListCities?${toQueryParams(params).toString()}`;
+  const url = `${API_BASE_URL}/ListCities?${toQueryParams(params)}`;
   const res = await fetch(url, {
     method: "GET",
     headers: {

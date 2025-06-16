@@ -1,0 +1,157 @@
+export interface MemberBenificaryDetail {
+  success: boolean;
+  id: string;
+  type: null;
+  messages: any[];
+  model: BenificaryModel[];
+  result: null;
+  count: number;
+  page: number;
+  limit: number;
+}
+
+export interface BenificaryModel {
+  id: string;
+  memberId: null | string;
+  claimIntiId: null | string;
+  userId: null | string;
+  relatedId: null | string;
+  parentId: null | string;
+  fullname: null | string;
+  policyId: null | string;
+  policyNo: null | string;
+  policyHolder: null | string;
+  branchId: null | string;
+  branchName: null | string;
+  code: null | string;
+  type: null | string;
+  createdAt: Date;
+  createdBy: string;
+  updatedAt: null | string;
+  updatedBy: null | string;
+  timestamp: Date;
+  status: null | string;
+  order: null;
+  page: number;
+  updateBenenfit: number;
+  limit: number;
+  beneficiaryId: string;
+  beneficyName: string;
+  searchTerm: null;
+  text: null;
+  value: null;
+  paymentMethod: string;
+  beneficyBankName: string;
+  beneficyBankAccount: string;
+  beneficiaryIdentifier: null;
+  documentInsuredId: string;
+  documentInsuredName: null;
+  memberInsuredId: string;
+  memberInsuredRelationship: null;
+  isOwner: null;
+  beneficialRelationship: string;
+  documentBeneficialId: string;
+  documentBeneficialName: null;
+  isBeneficial: boolean;
+  memberBeneficialId: string;
+  memberHists: null;
+  documents: Document[];
+  users: null;
+  isUpdateBenenfit: boolean;
+  contactEmail: null;
+  memberMain: null;
+  contactPhone: null;
+  citizenIdentity: null;
+  policyHistId: null;
+  memberIds: null;
+  info: null;
+  isDeleted: null;
+  parent: null;
+  memberRequestRegister: null;
+  isCardBLVP: null;
+  isSTBH: null;
+  cardHospitalId: null;
+  policy: null;
+  policyHistHist: null;
+  membersInUsers: null;
+  memberRelsInMembers: null;
+  salaries: null;
+  memberRel: MemberRel;
+  empCode: null;
+}
+
+export interface Document {
+  id: string;
+  policyId: null;
+  policyHistId: null;
+  relatedId: string;
+  typeCode: null;
+  relatedObject: null;
+  type: null;
+  descType: null;
+  typeName: string;
+  fileName: string;
+  ext: null;
+  code: null;
+  name: string;
+  desc: null;
+  extInfo: null;
+  file: null;
+  createdAt: Date;
+  createdBy: string;
+  updatedAt: null;
+  updatedBy: null;
+  timestamp: null;
+  status: string;
+  numOfExport: null;
+  policyHists: null;
+  policyHist: null;
+  related2: null;
+}
+
+export interface MemberRel {
+  id: string;
+  memberId: string;
+  relatedId: string;
+  relationship: null;
+  related: null;
+  info: MemberRelInfo;
+}
+
+export interface MemberRelInfo {
+  id: string;
+  memberId: string;
+  transNo: number;
+  type: null;
+  firstName: null;
+  lastName: null;
+  planId: null;
+  terminalDate: null;
+  createdAt: Date;
+  createdBy: string;
+  updatedAt: null;
+  updatedBy: null;
+  timestamp: Date;
+  status: null;
+  plan: null;
+  policyHist: null;
+  grossLcPremium: null;
+  grossFcPremium: null;
+  salary: null;
+  isVip: null;
+  chngEffFmDt: null;
+  protector: null;
+  dob: Date;
+  policyHistId: null;
+  citizenIdentity: null;
+  phone: null;
+  email: null;
+  gender: null;
+  address: null;
+  relationship: null;
+  nationality: null;
+  originalEntryDt: null;
+  effectiveFrom: Date;
+  effectiveTo: null;
+  notes: null;
+}

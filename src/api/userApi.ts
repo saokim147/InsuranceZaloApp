@@ -1,123 +1,181 @@
+import { coordinate } from "@/types/mapType";
+import {
+  CheckOtpResponse,
+  LoginResponse,
+  OtpResponse,
+  RefreshTokenResponse,
+  SigninResponse,
+} from "@/types/userType";
+import { apiClient } from "@/utils/interceptor";
 import { toQueryParams } from "@/utils/queryUtil";
-import { ParseStatus } from "zod";
-// https://localhost:7252
-//  https://7a02-2001-ee0-4f04-dc20-5831-cb0c-ed48-4ec3.ngrok-free.app
-const API_BASE_URL =
-  "https://7a02-2001-ee0-4f04-dc20-5831-cb0c-ed48-4ec3.ngrok-free.app/Account";
-
-const EXTERNAL_API_BASE_URL = "https://api-uat-ibmi.baominh.vn:8500/account";
+import { log } from "console";
+import { Languages } from "lucide-react";
+import { parse } from "path";
+import { getAccessToken, getLocation } from "zmp-sdk/apis";
+const BASE_URL = "https://api-uat-ibmi.baominh.vn:8500/insurance/Account";
 
 export async function getUserPhoneNumber(
   userAccessToken: string = "",
   token: string = ""
-) {
-  const params = {
-    userAccessToken,
-    token,
+): Promise<any> {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/GetZaloUserLocation?${toQueryParams({
+        userAccessToken,
+        token,
+      })}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUserLocation(
+  userAccessToken: string = "",
+  token: string = ""
+): Promise<any> {
+  try {
+    const response = await apiClient.get<any>(
+      `${BASE_URL}/GetZaloUserLocation?${toQueryParams({
+        userAccessToken,
+        token,
+      })}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUserLocationCoordinate(): Promise<coordinate> {
+  const [token, code] = await Promise.all([
+    new Promise<string>((resolve, reject) => {
+      getAccessToken({
+        success: (accessToken) => resolve(accessToken),
+        fail: (error) => reject(error),
+      });
+    }),
+    new Promise<string | undefined>((resolve, reject) => {
+      getLocation({
+        success: (data) => resolve(data.token),
+        fail: (error) => reject(error),
+      });
+    }),
+  ]);
+
+  if (!code) {
+    throw new Error("Location code not available");
+  }
+  const result = await getUserLocation(token, code);
+  console.log("results: ", result.data.latitude);
+
+  return {
+    latitude: result.data.latitude,
+    longitude: result.data.longitude,
   };
-  const url = `${API_BASE_URL}/GetZaloUserLocation?${toQueryParams(
-    params
-  ).toString()}`;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "69420",
-      },
-    });
+}
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
+export async function getExternalToken(): Promise<SigninResponse> {
+  try {
+    const response = await apiClient.post<SigninResponse>("/account/sign-in", {
+      username: import.meta.env.VITE_EXTERNAL_USERNAME,
+      password: import.meta.env.VITE_EXTERNAL_PASSWORD,
+    });
+    return response.data;
   } catch (error) {
     throw error;
   }
 }
 
-export async function changePassword(
-  password: string,
-  confirmPassword: string
-) {}
-
-// đều phải gọi khi muốn xác thực
-export async function getExternalToken(username: string, password: string) {
-  const url = `${EXTERNAL_API_BASE_URL}/sign-in`;
+export async function getRefreshToken(
+  accessToken: string,
+  refreshToken: string
+): Promise<RefreshTokenResponse> {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
+    const response = await apiClient.post<RefreshTokenResponse>(
+      "/account/refresh-token",
+      {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      }
+    );
+    return response.data;
   } catch (error) {
     throw error;
   }
 }
 
-// trả về token rồi lưu vào storage  để sau này này ko cần phải đăng nhập lại
-export async function login(phoneNumber: string, password: string) {
-  const url = `${EXTERNAL_API_BASE_URL}/login`;
+// lưu vào native storage
+export async function login(
+  phoneNumber: string,
+  password: string
+): Promise<LoginResponse> {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        UserName: phoneNumber,
-        Password1: password,
-      }),
+    const response = await apiClient.post<LoginResponse>(`/account/login`, {
+      UserName: phoneNumber,
+      Password1: password,
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     throw error;
   }
 }
 
-export async function signIn(username: string, password: string) {
-  const url = `${EXTERNAL_API_BASE_URL}/sign-in`;
+export async function getOtpCode(
+  sendType: string,
+  relatedId: string,
+  email: string,
+  phoneNumber: string,
+  createdBy: string
+): Promise<OtpResponse> {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
+    const response = await apiClient.post<OtpResponse>(
+      `/Account/GeneratorOtp`,
+      {
+        SendType: sendType,
+        RelatedId: relatedId,
+        RelatedObject: "ClaimInti",
+        Email: email,
+        Phone: phoneNumber,
+        CreatedBy: createdBy,
+        Type: "OTP-CLM-FORM",
+        TemplateType: "OTP-CLM-FORM",
+        Language: "vi",
+        RelatedType: "OT",
+      }
+    );
+    return response.data;
   } catch (error) {
     throw error;
   }
 }
 
-export async function validateUsername(userName: string) {}
-
-// /DataCommon/QueryDataCommon/MedicalFacilityView
-// /Claim/QueryClaim/RelationShipMemberView
-//  Tạo yêu cầu bồi thường    /declare/{operation}
+export async function checkOTPCode(
+  code: string,
+  createdBy: string
+): Promise<CheckOtpResponse> {
+  try {
+    const response = await apiClient.post<CheckOtpResponse>(
+      `/claim/CheckOTPClaimInti`,
+      {
+        Code: code,
+        Language: "VI",
+        CreatedBy: createdBy,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

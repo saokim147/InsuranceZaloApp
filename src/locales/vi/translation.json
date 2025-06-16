@@ -1,0 +1,9 @@
+{
+  "claim_detail": {
+    "title": "Chi tiết hồ sơ",
+    "member_id": "Member ID",
+    "member_code":"Số khai báo",
+    "policy_number": "Số HĐBH",
+    "beneficiary_name": "Tên người thụ hưởng"
+  }
+}

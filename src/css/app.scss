@@ -1,0 +1,21 @@
+.maplibregl-popup-close-button {
+  position: absolute;
+  right: 0.25rem;
+  top: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 2rem;
+  font-size: 1.5rem;
+}
+
+.maplibregl-popup-content {
+  background: var(--ml-c-bg-1);
+  border-radius: 20rem;
+  padding: 0.5rem;
+  min-height: 2.5rem;
+  box-shadow: var(--ml-shadow);
+}
+
+.maplibregl-popup-content:has(.maplibregl-popup-close-button) {
+  padding: 0.5rem 0.5rem 0.5rem;
+}

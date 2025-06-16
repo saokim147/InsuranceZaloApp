@@ -1,136 +1,95 @@
-import { Command as CommandPrimitive } from "cmdk";
-import { useMemo, useState } from "react";
+import { cn } from "@/lib/utils";
+import { ComboboxValue } from "@/types/uiType";
 import {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+} from "@headlessui/react";
+import React, { useRef } from "react";
 
-type Props<T extends string> = {
-  selectedValue: T;
-  onSelectedValueChange: (value: T) => void;
-  searchValue: string;
-  onSearchValueChange: (value: string) => void;
-  items: { value: T; label: string }[];
-  isLoading?: boolean;
-  emptyMessage?: string;
+interface GenericComboboxProps<T extends ComboboxValue> {
+  items: T[];
+  selectedItem: string;
+  setSelectedItem: (item: string) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-};
+  className?: string;
+  keyValue: "id" | "name" | "value";
+  displayValue: "id" | "name" | "value";
+}
 
-export function AutoComplete<T extends string>({
-  selectedValue,
-  onSelectedValueChange,
-  searchValue,
-  onSearchValueChange,
+export default function Autocomplete<T extends ComboboxValue>({
   items,
-  isLoading,
-  emptyMessage = "No items.",
-  placeholder = "Search...",
-}: Props<T>) {
-  const [open, setOpen] = useState(false);
-
-  const labels = useMemo(
-    () =>
-      items.reduce((acc, item) => {
-        acc[item.value] = item.label;
-        return acc;
-      }, {} as Record<string, string>),
-    [items]
-  );
-
-  const reset = () => {
-    onSelectedValueChange("" as T);
-    onSearchValueChange("");
+  selectedItem,
+  setSelectedItem,
+  onChange,
+  placeholder = "Select an option",
+  className = "w-72",
+  keyValue,
+  displayValue,
+}: GenericComboboxProps<T>) {
+  const getSelectedProp = (item: T) => {
+    if (keyValue === "id") return item.id;
+    if (keyValue === "name") return item.name;
+    return item.value;
+  };
+  const getDisplayProp = (item: T) => {
+    if (displayValue === "id") return item.id;
+    if (displayValue === "name") return item.name;
+    return item.value;
   };
 
-  const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (
-      !e.relatedTarget?.hasAttribute("cmdk-list") &&
-      labels[selectedValue] !== searchValue
-    ) {
-      reset();
-    }
-  };
-
-  const onSelectItem = (inputValue: string) => {
-    if (inputValue === selectedValue) {
-      reset();
+  const getNameFromKeyValue = (value: string): string => {
+    var item: T | undefined;
+    if (keyValue === "id") {
+      item = items.find((it) => it.id === value);
+    } else if (keyValue === "name") {
+      item = items.find((it) => it.name === value);
     } else {
-      onSelectedValueChange(inputValue as T);
-      onSearchValueChange(labels[inputValue] ?? "");
+      item = items.find((it) => it.value === value);
     }
-    setOpen(false);
+    return item ? getDisplayProp(item) : "";
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onFocus = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
   return (
-    <div className="flex items-center">
-      <Popover open={open} onOpenChange={setOpen}>
-        <Command shouldFilter={false}>
-          <PopoverAnchor asChild>
-            <CommandPrimitive.Input
-              asChild
-              value={searchValue}
-              onValueChange={onSearchValueChange}
-              onKeyDown={(e) => setOpen(e.key !== "Escape")}
-              onMouseDown={() => setOpen((open) => !!searchValue || !open)}
-              onFocus={() => setOpen(true)}
-              onBlur={onInputBlur}
-            >
-              <Input placeholder={placeholder} />
-            </CommandPrimitive.Input>
-          </PopoverAnchor>
-          {!open && <CommandList aria-hidden="true" className="hidden" />}
-          <PopoverContent
-            asChild
-            onOpenAutoFocus={(e) => e.preventDefault()}
-            onInteractOutside={(e) => {
-              if (
-                e.target instanceof Element &&
-                e.target.hasAttribute("cmdk-input")
-              ) {
-                e.preventDefault();
-              }
-            }}
-            className="w-[--radix-popover-trigger-width] p-0"
+    <Combobox value={selectedItem} onChange={setSelectedItem}>
+      <ComboboxButton as="div" className="flex items-center w-full relative">
+        <ComboboxInput
+          ref={inputRef}
+          className={cn(
+            "w-full  flex h-10 focus:border-primary focus:ring-1 focus:ring-primary outline-none  rounded-md border border-input bg-background px-3 py-2 text-base   placeholder:text-muted-foreground  disabled:cursor-not-allowed disabled:opacity-50",
+            className
+          )}
+          placeholder={placeholder}
+          onKeyDown={(e) => e.stopPropagation()}
+          displayValue={(item: string) => getNameFromKeyValue(item)}
+          onChange={(e) => onChange(e)}
+          onFocus={onFocus}
+        />
+      </ComboboxButton>
+
+      <ComboboxOptions className="mt-1 w-full bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+        {items.map((item) => (
+          <ComboboxOption
+            key={item.id}
+            value={getSelectedProp(item)}
+            className="p-2 data-[focus]:bg-gray-200  mx-1 mt-1 rounded-sm"
           >
-            <CommandList>
-              {isLoading && (
-                <CommandPrimitive.Loading>
-                  <div className="p-1">
-                    <Skeleton className="h-6 w-full" />
-                  </div>
-                </CommandPrimitive.Loading>
-              )}
-              {items.length > 0 && !isLoading ? (
-                <CommandGroup>
-                  {items.map((option) => (
-                    <CommandItem
-                      key={option.value}
-                      value={option.value}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onSelect={onSelectItem}
-                    >
-                      {option.label}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ) : null}
-              {!isLoading ? (
-                <CommandEmpty>{emptyMessage ?? "No items."}</CommandEmpty>
-              ) : null}
-            </CommandList>
-          </PopoverContent>
-        </Command>
-      </Popover>
-    </div>
+            {getDisplayProp(item)}
+          </ComboboxOption>
+        ))}
+        {items.length === 0 && (
+          <div className="p-2 text-gray-500">No results found</div>
+        )}
+      </ComboboxOptions>
+    </Combobox>
   );
 }

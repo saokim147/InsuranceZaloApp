@@ -1,0 +1,29 @@
+{
+  "claim_detail": {
+    "title": "Claim Detail",
+    "member_id": "Member ID",
+    "member_code":"Số khai báo",
+    "policy_number": "Số HĐBH",
+    "beneficiary_name": "Tên người thụ hưởng",
+    "beneficiary_info": "Thông tin người được BH",
+    "benefit_name":"Họ và tên người Người được bảo hiểm",
+    "dob":"Ngày tháng năm sinh",
+    "effective_from":"Ngày bắt đầu bảo hiểm",
+    "effective_to":"Ngày kết thúc bảo hiểm",
+    "customer":"Chủ hợp đồng",
+    "contact_info":"Thông tin liên hệ",
+    "contact_email":"Email",
+    "contact_phone":"Số điện thoại",
+    "medical_info":"Thông tin điều trị",
+    "medical_facility":"CSYT",
+    "admission_date":"Ngày điều trị/nhập viện",
+    "discharge_date":"Ngày xuất viện",
+    "diagnostics":"Chẩn đoán",
+    "request_amount":"Số tiền yêu cầu bồi thường",
+    "payment_info":"Thông tin thanh toán",
+    "beneficiary_relationship":"Mối quan hệ",
+    "payment_method":"Hình thức thanh toán",
+    "bank_account":"Tên ngân hàng",
+    "account_no":"Số tài khoản"
+  }
+}

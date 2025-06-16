@@ -1,17 +1,30 @@
 import { useState } from "react";
 import { BottomNavigation } from "zmp-ui";
-import { HomeIcon, MapIcon, User } from "lucide-react";
+import { FilePlus } from "lucide-react";
+import { HomeIcon } from "./icons/homeIcon";
+import { MapIcon } from "./icons/mapIcon";
+import { UserIcon } from "./icons/userIcon";
+import { ClaimIcon } from "./icons/claimIcon";
 
 function BottomNavigationPage() {
-  const [activeTab, setActiveTab] = useState("chat");
+  const [activeTab, setActiveTab] = useState("claim");
   return (
     <BottomNavigation
       fixed
       activeKey={activeTab}
       onChange={(key) => setActiveTab(key)}
+      className="border border-gray-200"
     >
       <BottomNavigation.Item
-        label="Home"
+        label="Quản lí HSBT"
+        key="claim"
+        icon={<ClaimIcon />}
+        activeIcon={<ClaimIcon />}
+        linkTo="/claim"
+        className="font-semi"
+      />
+      <BottomNavigation.Item
+        label="Tìm kiếm"
         key="home"
         icon={<HomeIcon />}
         activeIcon={<HomeIcon />}
@@ -27,8 +40,8 @@ function BottomNavigationPage() {
       <BottomNavigation.Item
         label="Tài khoản"
         key="account"
-        icon={<User />}
-        activeIcon={<User />}
+        icon={<UserIcon />}
+        activeIcon={<UserIcon />}
         linkTo="/profile"
       />
     </BottomNavigation>
